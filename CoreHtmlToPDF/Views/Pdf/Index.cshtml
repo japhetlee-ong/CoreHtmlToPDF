@@ -1,0 +1,88 @@
+﻿@model SampleModel
+
+@{
+    Layout = null;
+}
+
+<html>
+	<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - CoreHtmlToPDF</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/PDFViewStyle.css"/>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <page id="pdf-content" size="A4">
+            <div style="display:flex;align-items:stretch;justify-content:center;">
+                <img src="~/img/auf-logo.png" style="width:8%; height:8%"/>
+                <div class="text-center"style="margin-top:20px;margin-left:20px">
+                    <h4>Angeles University Foundation</h4>
+                    <h6>Budget Request form</h6>
+                </div>
+            </div>
+            <p>Budget request: @Model.Name</p>
+            <p>Request reason: @Model.Description</p>
+            <p>Estimated Budget total: @Model.EstimatedBudgetTotal </p>
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Approved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @{
+                    foreach(var data in Model.ItemList)
+                    {
+                        <tr>
+                            <th scope="col">@data.Amount</th>
+                            <td>@data.Price</td>
+                            <td>@data.Name</td>
+                            <td>@data.Description</td>
+                            <td>@(data.Approved ? "Approved" : "Declined")</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+
+            <p>Approved by: @Model.ApprovedBy</p>
+
+        </page>
+
+    <div id="ignore-content">
+        @using (Html.BeginForm("test","pdf")){
+@*            <a href="#" class="float">
+                <i class="fa fa-plus my-float"></i>
+            </a>*@
+
+            <button class="btn btn-warning btn-block float" style="margin-top:10px; width:50%">Download</button>
+
+        }
+    </div>
+
+
+    </body>
+</html>
+
+<script type="text/javascript">
+
+    function downloadPDF()
+    {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Test","Pdf")',
+            success: function () {
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+    }
+
+</script>
